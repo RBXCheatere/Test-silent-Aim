@@ -1,9 +1,5 @@
-Client = {
-    Modules = {
-        ClientEnvoirment,
-        ClientMain,
-    },
-    Toggles = {
+
+   local Toggles = {
         BHop = false,
         Infammo = false,
         Automtatic = false,
