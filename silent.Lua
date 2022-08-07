@@ -1,5 +1,9 @@
-
-   local target = {
+Client = {
+    Modules = {
+        ClientEnvoirment,
+        ClientMain,
+    },
+    Toggles = {
         BHop = false,
         Infammo = false,
         Automtatic = false,
@@ -730,3 +734,4 @@ function closestplayer()
 		end
     end
     return target
+end
