@@ -1,205 +1,4 @@
-Client = {
-    Modules = {
-        ClientEnvoirment,
-        ClientMain,
-    },
-    Toggles = {
-        BHop = false,
-        Infammo = false,
-        Automtatic = false,
-        FireRate = false,
-        NoRecoil = false,
-        NoSpread = false,
-        WallBang = false,
-        InstantRespawn = false,
-        AntiAim = false,
-        AutoAmmo = false,
-        AutoHealth = false,
-        Trac = false,
-        Sight = false,
-        FOV = false,
-        Golden = true,
-        Visiblecheck = false,
-        SilentAim = false,
-
-    },
-    Values = {
-        JumpPower = 50,
-        LookMeth = 'Look Up',                                                                                                                                                                                                                                                 
-        Test = '',
-        FOV = 150,
-        ChatMsg = 'Bolts Ware v8 On Top',
-        AimPart = 'Head'
-
-        
-    }
-}
-
-Config = {
-    Infammo = false,
-    Automtatic = false,
-    FireRate = false,
-    NoRecoil = false,
-    NoSpread = false
-}
-
-
-
-local CurrentCamera = workspace.CurrentCamera
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local Mouse = LocalPlayer:GetMouse()
-function ClosestPlayer()
-    local MaxDist, Closest = math.huge
-    for i,v in pairs(Players.GetPlayers(Players)) do
-            local Head = v.Character.FindFirstChild(v.Character, "Head")
-            if Head then 
-                local Pos, Vis = CurrentCamera.WorldToScreenPoint(CurrentCamera, Head.Position)
-                if Vis then
-                    local MousePos, TheirPos = Vector2.new(Mouse.X, Mouse.Y), Vector2.new(Pos.X, Pos.Y)
-                    local Dist = (TheirPos - MousePos).Magnitude
-                    if Dist < MaxDist and Dist <= Client.Values.FOV then
-                        MaxDist = Dist
-                        Closest = v
-                    end
-                end
-            end
-        
-    end
-    return Closest
-end
-
-function GetAimPart()
-    if Client.Values.AimPart == 'Head' then
-        return 'Head'
-    end
-    if Client.Values.AimPart == 'LowerTorso' then
-        return 'LowerTorso'
-    end
-    if Client.Values.AimPart == 'Random' then
-        if math.random(1,4) == 1 then
-            return 'Head'
-        else
-            return 'LowerTorso'
-        end
-    end
-end
-
-local mt = getrawmetatable(game)
-local namecallold = mt.__namecall
-local index = mt.__index
-setreadonly(mt, false)
-mt.__namecall = newcclosure(function(self, ...)
-    local Args = {...}
-    NamecallMethod = getnamecallmethod()
-    if tostring(NamecallMethod) == "FindPartOnRayWithIgnoreList" and Client.Toggles.WallBang then
-        table.insert(Args[2], workspace.Map)
-    end
-    if NamecallMethod == "FindPartOnRayWithIgnoreList" and not checkcaller() and Client.Toggles.SilentAim then
-        local CP = ClosestPlayer()
-        if CP and CP.Character and CP.Character.FindFirstChild(CP.Character, GetAimPart()) then
-            Args[1] = Ray.new(CurrentCamera.CFrame.Position, (CP.Character[GetAimPart()].Position - CurrentCamera.CFrame.Position).Unit * 1000)
-            return namecallold(self, unpack(Args))
-        end
-    end
-    if tostring(NamecallMethod) == "FireServer" and tostring(self) == "ControlTurn" then
-        if Client.Toggles.AntiAim == true then
-            if Client.Values.LookMeth == "Look Up" then
-                Args[1] = 1.3962564026167
-            end
-            if Client.Values.LookMeth == "Look Down" then
-                Args[1] = -1.5962564026167
-            end
-            if Client.Values.LookMeth == "Smell Your Butt" then
-                Args[1] = -8.1
-            end
-            if Client.Values.LookMeth == "Give Your Self Top" then
-                Args[1] = -3.1 --3.1
-            end
-            if Client.Values.LookMeth == "Torso In Legs" then
-                Args[1] = -6.1;
-            end
-            return namecallold(self, unpack(Args))
-        end
-    end
-    return namecallold(self, ...)
-end)
-setreadonly(mt, true)
-local FOVCircle = Drawing.new("Circle")
-FOVCircle.Thickness = 2
-FOVCircle.NumSides = 460
-FOVCircle.Filled = false
-FOVCircle.Transparency = 0.6
-FOVCircle.Radius = Client.Values.FOV
-FOVCircle.Color = Color3.new(255,0,0)
-game:GetService("RunService").Stepped:Connect(function()
-    if Client.Toggles.FireRate == true then
-        Client.Modules.ClientEnvoirment.DISABLED = false
-        Client.Modules.ClientEnvoirment.DISABLED2 = false
-    end
-    if Client.Toggles.NoRecoil == true then
-        Client.Modules.ClientEnvoirment.recoil = 0
-    end
-    if Client.Toggles.NoSpread == true then
-        Client.Modules.ClientEnvoirment.currentspread = 0
-        Client.Modules.ClientEnvoirment.spreadmodifier = 0
-    end
-    if Client.Toggles.AlwaysAuto == true then
-        Client.Modules.ClientEnvoirment.mode = 'automatic'
-    end
-    if Client.Toggles.InfAmmo == true then
-        debug.setupvalue(Client.Modules.ModsShit, 3, 70)
-    end
-    FOVCircle.Radius = Client.Values.FOV
-    if Client.Toggles.FOV == true then
-        FOVCircle.Visible = true
-    else
-        FOVCircle.Visible = false
-    end
-    FOVCircle.Position = game:GetService('UserInputService'):GetMouseLocation()
-end)
-
-spawn(function()
-    while true do
-        wait()
-        if Client.Toggles.BHop == true then
-            game.Players.LocalPlayer.Character.Humanoid.Jump = true
-        end
-        if Client.Toggles.JumpPower == true then
-            game.Players.LocalPlayer.Character.Humanoid.JumpPower = Client.Values.JumpPower
-        end
-        if Client.Toggles.InstantRespawn == true then
-            if not game.Players.LocalPlayer.Character:FindFirstChild('Spawned') and game:GetService("Players").LocalPlayer.Character:FindFirstChild("Cam") then
-                if game.Players.LocalPlayer.PlayerGui.Menew.Enabled == false then
-                    game:GetService("ReplicatedStorage").Events.LoadCharacter:FireServer()
-                    wait()
-                end
-            end
-        end
-    end
-end)
-
-function RandomPlr()
-    tempPlrs = {}
-    for i,v in pairs(game.Players:GetPlayers()) do
-        if v and v ~= game.Players.LocalPlayer and v.Character and v.Character:FindFirstChild("Head") and v.Team ~= game.Players.LocalPlayer.Team and v.Character:FindFirstChild("Spawned") then
-            table.insert(tempPlrs,v)
-        end
-    end
-    return tempPlrs[math.random(1,#tempPlrs)]    
-end
-function SwitchToKnife()
-	local N = game:GetService("VirtualInputManager")
-	N:SendKeyEvent(true, 51, false, game)
-	N:SendKeyEvent(false, 51, false, game)	
-end
-function KnifeKill()
-
-    OldPos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
-    local Crit = math.random() > .6 and true or false;
-    Target = RandomPlr()
-    game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(Target.Character.Head.CFrame * CFrame.new(2,0,0))
-end
+local ArsoniaTable={
     Player={
         Anti_Aim={
             Enabled=false,
@@ -276,10 +75,67 @@ end
             Removeplayercheck=false,
         },
     },
-
-       
-
-     
+    Visuals={
+        Main={
+            Enabled=false,
+            Renderplayer=false,
+            CameraoffsetX=0,        
+            CameraoffsetY=0,
+            CameraoffsetZ=0,
+            ArmoffsetX=0,
+            ArmoffsetY=0,
+            ArmoffsetZ=0,
+            Antiflash=false,
+            Anticrouch=false,
+            Anticrouch2=false,
+            Crosshaircol=Color3.new(255,0,0),
+        },
+        Viewmodel={
+            Enabled=false,
+            Gunchams=false,
+            GunchamsTrans=0,
+            GunchamsRefl=0,
+            GunchamsMat="SmoothPlastic",
+            GunchamsCol=Color3.new(),
+            Armchams=false,
+            ArmchamsTrans=0,
+            ArmchamsRefl=0,
+            ArmchamsCol=Color3.new(255,0,0),
+        },
+        Worldambience={
+            Enabled=false,
+            Ambience=Color3.new(),
+            Time=0,
+            Brightness=0,
+            Color=Color3.new(),
+            Shadows=false,
+            ShadowColor=Color3.new(),
+        },
+        ESP={
+            Enabled=false,
+            Color=Color3.new(),
+            Chams=false,
+            Chamsoutline=false,
+            ChamsoutlineSize=0,
+            ChamsoutlineColor=Color3.new(255,0,0),
+            Names=false,
+            BacktrackChams=false,
+            Box=false,
+            Tracers=false,
+            Health=false,
+        },
+        Bullettracers={
+            Enabled=false,
+            Width=0,
+            Color=Color3.new(255,0,0),
+            Material="SmoothPlastic",
+            Transparency=0,
+            Lifetime=0,
+            Refl=0,
+            Keeptopart=false,
+            Updatecol=false
+        },
+    },
     Aimbot={
         Silentaim={
             Enabled=false,
@@ -652,26 +508,4 @@ game:GetService('RunService').Stepped:connect(function() -- Infinite Ammo by Fro
     else
         game:GetService("ReplicatedStorage").wkspc.Status.RoundOver.Value = true
     end
-end)
-
-
-
-CombatTabMainSection:Toggle("Silent Aim",function(x)
-end)
-_G.aimbot = false
-function closestplayer()
-    local dist = math.huge -- math.huge means a really large number, 1M+.
-    local target = nil --- nil means no value
-    local localplayer = game.Players.LocalPlayer
-	for i,v in pairs(game:GetService("Players"):GetPlayers()) do
-		if v ~= localplayer then
-			if v.Character and v.Character:FindFirstChild("Head") and v.TeamColor ~= localplayer.TeamColor and _G.aimbot and v.Character.Humanoid.Health > 0 then --- creating the checks
-    			local magnitude = (v.Character.Head.Position - localplayer.Character.Head.Position).magnitude
-				if magnitude < dist then
-					dist = magnitude
-					target = v
-				end
-			end
-		end
-    end
-    return target
+return ArsoniaTable
