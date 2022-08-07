@@ -508,4 +508,4 @@ game:GetService('RunService').Stepped:connect(function() -- Infinite Ammo by Fro
     else
         game:GetService("ReplicatedStorage").wkspc.Status.RoundOver.Value = true
     end
-return ArsoniaTable
+end)
