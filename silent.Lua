@@ -200,7 +200,6 @@ function KnifeKill()
     Target = RandomPlr()
     game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(Target.Character.Head.CFrame * CFrame.new(2,0,0))
 end
-local ArsoniaTable={
     Player={
         Anti_Aim={
             Enabled=false,
@@ -277,67 +276,10 @@ local ArsoniaTable={
             Removeplayercheck=false,
         },
     },
-    Visuals={
-        Main={
-            Enabled=false,
-            Renderplayer=false,
-            CameraoffsetX=0,        
-            CameraoffsetY=0,
-            CameraoffsetZ=0,
-            ArmoffsetX=0,
-            ArmoffsetY=0,
-            ArmoffsetZ=0,
-            Antiflash=false,
-            Anticrouch=false,
-            Anticrouch2=false,
-            Crosshaircol=Color3.new(255,0,0),
-        },
-        Viewmodel={
-            Enabled=false,
-            Gunchams=false,
-            GunchamsTrans=0,
-            GunchamsRefl=0,
-            GunchamsMat="SmoothPlastic",
-            GunchamsCol=Color3.new(),
-            Armchams=false,
-            ArmchamsTrans=0,
-            ArmchamsRefl=0,
-            ArmchamsCol=Color3.new(255,0,0),
-        },
-        Worldambience={
-            Enabled=false,
-            Ambience=Color3.new(),
-            Time=0,
-            Brightness=0,
-            Color=Color3.new(),
-            Shadows=false,
-            ShadowColor=Color3.new(),
-        },
-        ESP={
-            Enabled=false,
-            Color=Color3.new(),
-            Chams=false,
-            Chamsoutline=false,
-            ChamsoutlineSize=0,
-            ChamsoutlineColor=Color3.new(255,0,0),
-            Names=false,
-            BacktrackChams=false,
-            Box=false,
-            Tracers=false,
-            Health=false,
-        },
-        Bullettracers={
-            Enabled=false,
-            Width=0,
-            Color=Color3.new(255,0,0),
-            Material="SmoothPlastic",
-            Transparency=0,
-            Lifetime=0,
-            Refl=0,
-            Keeptopart=false,
-            Updatecol=false
-        },
-    },
+
+       
+
+     
     Aimbot={
         Silentaim={
             Enabled=false,
@@ -715,7 +657,6 @@ end)
 
 
 CombatTabMainSection:Toggle("Silent Aim",function(x)
-    ArsoniaTable.Aimbot.Silentaim.Enabled=x
 end)
 _G.aimbot = false
 function closestplayer()
@@ -734,4 +675,3 @@ function closestplayer()
 		end
     end
     return target
-end
