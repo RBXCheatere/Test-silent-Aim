@@ -1,5 +1,5 @@
 
-   local Toggles = {
+   local target = {
         BHop = false,
         Infammo = false,
         Automtatic = false,
